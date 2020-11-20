@@ -1,5 +1,5 @@
 # Strawpoll-Bot
-A simple Strawpoll-Bot for .de and .me version
+A simple working (Nov. 2020) Strawpoll-Bot for .de and .me version
 
 ## .de example:
 - https://strawpoll.de/fe8sa1y
