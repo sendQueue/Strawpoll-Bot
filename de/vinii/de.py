@@ -1,23 +1,22 @@
-
 """
 @author sendQueue <Vinii>
 Further info at Vinii.de or github@vinii.de, file created at
-19.11.2020. Use is only authorized if given credit!
+19.11.2020 and last edited 20.12.2020. Use is only authorized if given credit!
 """
 
 import argparse
+import re
 import threading
 import time
-import re
 
 from pip._vendor import requests
 
-parser = argparse.ArgumentParser(description="This script is only for the .de version of Strawpoll")
+parser = argparse.ArgumentParser(description="This script is ONLY for the .de version of Strawpoll")
 parser.add_argument("id", help="Strawpoll ID -> .de/xxxx (xxxx is the id)")
 parser.add_argument("option", help="Checkbox number -> 1. answer or 2. answer.. so on.")
-parser.add_argument("-d", help="Delay in ms -> Default: 200 ms waits 0.2 seconds till new thread.")
+parser.add_argument("-d", help="Delay in ms -> Default: 0.2 seconds till new thread.")
 parser.add_argument("-mt", help="Max amount of threads -> Default: 16")
-parser.add_argument("-to", help="Poll timeout -> Default 10 seconds")
+parser.add_argument("-to", help="Proxy timeout -> Default: 10 seconds")
 
 full_args = parser.parse_args()
 
@@ -34,23 +33,23 @@ motd = """"
 \___ \ ) _) /    / ) D ((  O )) \/ ( ) _) ) \/ ( ) _) 
 (____/(____)\_)__)(____/ \__\)\____/(____)\____/(____)
                                     
-                    strawpoll.de ip bypassing voting bot
+        \033[93m strawpoll.de \033[0mip bypassing voting bot
                                   - by Vinii | sendQueue    
                                                   
 """
 
 
-def mains(args):
+def init(args):
     print(motd)
 
     get_header = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) '
-                      'Version/13.1.2 Safari/605.1.15'}
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko)'
+                      'Chrome/87.0.4280.88 Safari/537.36'}
     post_header = \
         {
             'Host': 'strawpoll.de',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) '
-                          'Version/13.1.2 Safari/605.1.15',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko)'
+                          'Chrome/87.0.4280.88 Safari/537.36',
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate, br',
             'Accept-Language': 'en-US,en;q=0.5',
@@ -66,7 +65,7 @@ def mains(args):
 
     # initialize args
     if args.d is None:
-        d = 0.0
+        d = 0.05
     else:
         d = int(args.d) / 1000
 
@@ -101,8 +100,6 @@ def mains(args):
             thread.daemon = True
             thread.start()
 
-            # print(p_count, end=" ")
-
             # keep thread limiter
             while threading.active_count() >= mt:
                 time.sleep(0.05)
@@ -115,10 +112,9 @@ def mains(args):
             pass
         else:
             print(OKGREEN + "Finished botting with" + WARNING, count, OKGREEN + "successful votes!" + ENDC)
-            print(working_proxies)
 
     except FileNotFoundError:
-        print("proxies.txt not found!")
+        print("proxies.txt not found! If running on windows: Change to valid windows path")
 
 
 def do_poll(url, id, get_header, post_header, op, proxy, to):
@@ -142,13 +138,13 @@ def do_poll(url, id, get_header, post_header, op, proxy, to):
             print(OKGREEN + "1 Vote added!" + ENDC)
 
     except requests.exceptions.ReadTimeout:
-        print(WARNING + "ReadTimeout" + ENDC)
+        print_warning("ReadTimeout")
         pass
     except requests.exceptions.ProxyError:
-        print(WARNING + "ProxyError" + ENDC)
+        print_warning("ProxyError")
         pass
     except requests.exceptions.ConnectionError:
-        print(WARNING + "ConnectionError" + ENDC)
+        print_warning("ConnectionError")
         pass
 
 
@@ -166,4 +162,8 @@ def find_checkbox(content, op):
     return 0
 
 
-mains(full_args)
+def print_warning(warning):
+    print(WARNING + warning + ENDC)
+
+
+init(full_args)
