@@ -9,7 +9,7 @@ import re
 import threading
 import time
 
-from pip._vendor import requests
+import requests
 
 parser = argparse.ArgumentParser(description="This script is ONLY for the .de version of Strawpoll")
 parser.add_argument("id", help="Strawpoll ID -> .de/xxxx (xxxx is the id)")
@@ -118,7 +118,7 @@ def init(args):
 
 
 def do_poll(url, id, get_header, post_header, op, proxy, to):
-    proxies = {"https": proxy}
+    proxies = {"https": "https://" + proxy}
     if len(proxy) < 4:
         return
 
