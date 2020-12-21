@@ -8,7 +8,7 @@ import argparse
 import threading
 import time
 
-from pip._vendor import requests
+import requests
 
 parser = argparse.ArgumentParser(description="This script is ONLY for the .me version of Strawpoll")
 parser.add_argument("id", help="Strawpoll ID -> .me/xxxx (xxxx is the id)")
@@ -100,7 +100,7 @@ def init(args):
 
 
 def do_poll(url, header, op, proxy, to):
-    proxies = {"https": proxy}
+    proxies = {"https": "https://" + proxy}
     if len(proxy) < 4:
         return
     try:
@@ -148,7 +148,10 @@ def find_checkbox(content, op):
     option = content[content.find("options"):]
     option = option[option.find("value=\"") + len("value=\""):]
     option = option[:option.find("\"")]
-    return int(option) + op - 1
+    try:
+        return int(option) + op - 1
+    except ValueError:
+        return 0
 
 
 def print_warning(warning):
