@@ -118,7 +118,7 @@ def init(args):
 
 
 def do_poll(url, id, get_header, post_header, op, proxy, to):
-    proxies = {"https": "https://" + proxy}
+    proxies = {"https": "http://" + proxy}
     if len(proxy) < 4:
         return
 
