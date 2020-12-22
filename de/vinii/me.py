@@ -16,6 +16,7 @@ parser.add_argument("option", help="Checkbox number -> 1. answer or 2. answer.. 
 parser.add_argument("-d", help="Delay in ms -> Default: 0.2 seconds till new thread.")
 parser.add_argument("-mt", help="Max amount of threads -> Default: 16")
 parser.add_argument("-to", help="Proxy timeout -> Default: 10 seconds")
+parser.add_argument('-m', help="Set to True if poll enabled multiple answers")
 
 full_args = parser.parse_args()
 
@@ -61,6 +62,11 @@ def init(args):
     else:
         to = int(args.to)
 
+    if args.m is None or args.m == "False":
+        m = False
+    else:
+        m = True
+
     option = int(args.option)
 
     # read proxies file and parse proxy
@@ -78,7 +84,7 @@ def init(args):
                 print(WARNING + "Used all proxies. Finishing remaining threads" + ENDC)
                 break
 
-            thread = threading.Thread(target=do_poll, args=(url, header, option, proxy, to))
+            thread = threading.Thread(target=do_poll, args=(url, header, option, proxy, to, m))
             thread.daemon = True
             thread.start()
 
@@ -99,7 +105,7 @@ def init(args):
         print("proxies.txt not found! If running on windows: Change to valid windows path")
 
 
-def do_poll(url, header, op, proxy, to):
+def do_poll(url, header, op, proxy, to, m):
     proxies = {"https": "http://" + proxy}
     if len(proxy) < 4:
         return
@@ -111,8 +117,14 @@ def do_poll(url, header, op, proxy, to):
         # find tokens
         sec_token = str(find_sec_token(req.text))
         field_token = str(find_field_token(req.text))
+        name = find_name(req.text, oids)
 
-        page = requests.post(url, cookies=req.cookies, data={"security-token": sec_token + "&" + field_token, "options": oids},
+        if m:
+            data = {"security-token": sec_token, field_token: "", name: oids}
+        else:
+            data = {"security-token": sec_token, field_token: "", "options": oids}
+
+        page = requests.post(url, cookies=req.cookies, data=data,
                              headers=header, proxies=proxies, timeout=to)
 
         if page.text.find("\"success\":\"success\"") != -1:
@@ -152,6 +164,14 @@ def find_checkbox(content, op):
         return int(option) + op - 1
     except ValueError:
         return 0
+
+
+def find_name(content, oids):
+    name = content[:content.find(oids)]
+    name = name[len(name) - 90:]
+    name = name[name.find("name") + len("name=\""):]
+    name = name[:name.find("\"")]
+    return name
 
 
 def print_warning(warning):
