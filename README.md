@@ -12,7 +12,10 @@ multiple is only for the .me version -> some polls support multiple answers whic
 
 <br />
 If you are running windows you might need to change the proxies.txt path inside of the script: <br />
-Change proxies.txt to a valid windows path with double \\ for e.g. C:\\Users\\myUsername\\Desktop\\Strawpoll-Bot\\de\\vinii\\proxies.txt 
+Change proxies.txt to a valid windows path with double \\ for e.g. C:\\Users\\myUsername\\Desktop\\Strawpoll-Bot\\de\\vinii\\proxies.txt
+
+<br />
+you can get working proxies https://tiny.rip/proxy/https 
 
 ## .de example:
 - https://strawpoll.de/fe8sa1y (20k botted votes)
