@@ -1,5 +1,5 @@
 # Strawpoll-Bot
-A simple working (July 2021) Strawpoll-Bot for .de and .me version
+A simple working (July 2022) Strawpoll-Bot for .de and .me version
 
 runtime parameters are <br />
 id, poll-option, thread-delay, max-threads, thread-timeout(, multiple) <br />
