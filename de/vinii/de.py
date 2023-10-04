@@ -61,7 +61,7 @@ def init(args):
             'Pragma': 'no-cache',
             'Connection': 'close'
         }
-    url = "https://strawpoll.de/" + args.id
+    url = "https://strawpoll.de/ybd8y8r" + args.id
 
     # initialize args
     if args.d is None:
